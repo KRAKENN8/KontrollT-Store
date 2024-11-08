@@ -45,6 +45,10 @@ public class AppHelperPetStuff implements AppHelper<PetStuff> {
                 try {
                     System.out.print("Введите цену со скидкой: ");
                     discountedPrice = Double.parseDouble(inputProvider.getInput());
+                    if (discountedPrice >= price) {
+                        System.out.println("Цена со скидкой должна быть меньше исходной цены.");
+                        continue;
+                    }
                     break;
                 } catch (NumberFormatException e) {
                     System.out.println("Пожалуйста, введите корректное числовое значение для цены со скидкой.");

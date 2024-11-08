@@ -1,9 +1,12 @@
 package org.example.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 import java.time.LocalDate;
 
-public class Purchase {
+public class Purchase implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private Customer customer;
     private PetStuff petStuff;
@@ -17,6 +20,8 @@ public class Purchase {
         this.purchaseDate = LocalDate.now();
         this.useDiscount = useDiscount;
     }
+
+    // Геттеры и сеттеры
 
     public UUID getId() {
         return id;

@@ -1,8 +1,12 @@
 package org.example.model;
 
+import java.io.Serializable;
+import java.util.Objects;
 import java.util.UUID;
 
-public class Customer {
+public class Customer implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private UUID id;
     private String name;
     private String surname;
@@ -19,8 +23,15 @@ public class Customer {
         this.phone = phone;
     }
 
+    // Геттеры и сеттеры
+
     public UUID getId() {
         return id;
+    }
+
+    // Если вам нужно изменить UUID при редактировании, добавьте сеттер
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -45,6 +56,26 @@ public class Customer {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    // Переопределение методов equals и hashCode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Customer customer = (Customer) o;
+        return Objects.equals(name, customer.name) &&
+                Objects.equals(surname, customer.surname) &&
+                Objects.equals(phone, customer.phone);
+        // Если хотите учитывать UUID, добавьте: && Objects.equals(id, customer.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, surname, phone);
+        // Если учитываете UUID, добавьте его: Objects.hash(id, name, surname, phone);
     }
 
     @Override

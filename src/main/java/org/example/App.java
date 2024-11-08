@@ -4,6 +4,9 @@ import org.example.interfaces.Input;
 import org.example.services.CustomerService;
 import org.example.services.PetStuffService;
 import org.example.services.PurchaseService;
+import org.example.model.Customer;
+import org.example.model.PetStuff;
+import org.example.model.Purchase;
 
 public class App {
     private final CustomerService customerService;
@@ -22,7 +25,7 @@ public class App {
         System.out.println("------ Магазин товаров для домашних животных ------");
         boolean repeat = true;
         do {
-            System.out.println("Меню:");
+            System.out.println("\nМеню:");
             System.out.println("0. Выйти из программы");
             System.out.println("1. Добавить товар");
             System.out.println("2. Список товаров");
@@ -36,7 +39,13 @@ public class App {
             System.out.println("10. История покупок");
             System.out.print("Введите номер задачи: ");
 
-            int task = Integer.parseInt(inputProvider.getInput());
+            int task;
+            try {
+                task = Integer.parseInt(inputProvider.getInput());
+            } catch (NumberFormatException e) {
+                System.out.println("Некорректный ввод. Пожалуйста, введите число от 0 до 10.");
+                continue;
+            }
 
             switch (task) {
                 case 0:
@@ -73,7 +82,7 @@ public class App {
                     purchaseService.print();
                     break;
                 default:
-                    System.out.println("Неверный выбор.");
+                    System.out.println("Неверный выбор. Пожалуйста, введите число от 0 до 10.");
             }
         } while (repeat);
 

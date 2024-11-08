@@ -53,7 +53,13 @@ public class AppHelperPurchase implements AppHelper<Purchase> {
         List<Customer> customers = customerHelper.getRepository().load();
         customerHelper.printList(customers);
         System.out.print("Выберите номер покупателя: ");
-        int customerIndex = Integer.parseInt(inputProvider.getInput()) - 1;
+        int customerIndex;
+        try {
+            customerIndex = Integer.parseInt(inputProvider.getInput()) - 1;
+        } catch (NumberFormatException e) {
+            System.out.println("Некорректный ввод.");
+            return null;
+        }
 
         if (customerIndex >= 0 && customerIndex < customers.size()) {
             return customers.get(customerIndex);
@@ -66,7 +72,13 @@ public class AppHelperPurchase implements AppHelper<Purchase> {
         List<PetStuff> petStuffs = petStuffHelper.getRepository().load();
         petStuffHelper.printList(petStuffs);
         System.out.print("Выберите номер товара: ");
-        int petStuffIndex = Integer.parseInt(inputProvider.getInput()) - 1;
+        int petStuffIndex;
+        try {
+            petStuffIndex = Integer.parseInt(inputProvider.getInput()) - 1;
+        } catch (NumberFormatException e) {
+            System.out.println("Некорректный ввод.");
+            return null;
+        }
 
         if (petStuffIndex >= 0 && petStuffIndex < petStuffs.size()) {
             return petStuffs.get(petStuffIndex);

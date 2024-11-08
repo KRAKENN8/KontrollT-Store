@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.interfaces.AppHelper;
+import org.example.interfaces.FileRepository;
 import org.example.interfaces.Service;
 import org.example.interfaces.Input;
 import org.example.model.PetStuff;
@@ -8,12 +9,12 @@ import org.example.model.PetStuff;
 import java.util.List;
 
 public class PetStuffService implements Service<PetStuff> {
-    private final List<PetStuff> petStuffs;
+    private final FileRepository<PetStuff> petStuffRepository;
     private final AppHelper<PetStuff> appHelperPetStuff;
     private final Input inputProvider;
 
-    public PetStuffService(List<PetStuff> petStuffs, AppHelper<PetStuff> appHelperPetStuff, Input inputProvider) {
-        this.petStuffs = petStuffs;
+    public PetStuffService(FileRepository<PetStuff> petStuffRepository, AppHelper<PetStuff> appHelperPetStuff, Input inputProvider) {
+        this.petStuffRepository = petStuffRepository;
         this.appHelperPetStuff = appHelperPetStuff;
         this.inputProvider = inputProvider;
     }
@@ -22,8 +23,7 @@ public class PetStuffService implements Service<PetStuff> {
     public boolean add() {
         PetStuff petStuff = appHelperPetStuff.create();
         if (petStuff != null) {
-            petStuffs.add(petStuff);
-            appHelperPetStuff.getRepository().save(petStuffs);
+            petStuffRepository.save(petStuff);
             System.out.println("Товар успешно добавлен.");
             return true;
         }
@@ -33,16 +33,17 @@ public class PetStuffService implements Service<PetStuff> {
 
     @Override
     public void print() {
-        appHelperPetStuff.printList(petStuffs);
+        appHelperPetStuff.printList(petStuffRepository.load());
     }
 
     @Override
     public List<PetStuff> list() {
-        return petStuffs;
+        return petStuffRepository.load();
     }
 
     @Override
     public boolean edit(PetStuff petStuff) {
+        List<PetStuff> petStuffs = petStuffRepository.load();
         if (petStuffs.isEmpty()) {
             System.out.println("Список товаров пуст. Нечего редактировать.");
             return false;
@@ -50,22 +51,31 @@ public class PetStuffService implements Service<PetStuff> {
 
         print();
         System.out.print("Введите номер товара для редактирования: ");
-        int indexToEdit = Integer.parseInt(inputProvider.getInput()) - 1;
+        int indexToEdit;
+        try {
+            indexToEdit = Integer.parseInt(inputProvider.getInput()) - 1;
+        } catch (NumberFormatException e) {
+            System.out.println("Некорректный ввод.");
+            return false;
+        }
 
         if (indexToEdit >= 0 && indexToEdit < petStuffs.size()) {
             PetStuff updatedPetStuff = appHelperPetStuff.create();
-            petStuffs.set(indexToEdit, updatedPetStuff);
-            appHelperPetStuff.getRepository().save(petStuffs);
-            System.out.println("Товар успешно отредактирован.");
-            return true;
+            if (updatedPetStuff != null) {
+                petStuffs.set(indexToEdit, updatedPetStuff);
+                petStuffRepository.save(petStuffs);
+                System.out.println("Товар успешно отредактирован.");
+                return true;
+            }
         } else {
             System.out.println("Некорректный выбор товара.");
-            return false;
         }
+        return false;
     }
 
     @Override
     public boolean remove(PetStuff petStuff) {
+        List<PetStuff> petStuffs = petStuffRepository.load();
         if (petStuffs.isEmpty()) {
             System.out.println("Список товаров пуст. Нечего удалять.");
             return false;
@@ -73,16 +83,22 @@ public class PetStuffService implements Service<PetStuff> {
 
         print();
         System.out.print("Введите номер товара для удаления: ");
-        int indexToRemove = Integer.parseInt(inputProvider.getInput()) - 1;
+        int indexToRemove;
+        try {
+            indexToRemove = Integer.parseInt(inputProvider.getInput()) - 1;
+        } catch (NumberFormatException e) {
+            System.out.println("Некорректный ввод.");
+            return false;
+        }
 
         if (indexToRemove >= 0 && indexToRemove < petStuffs.size()) {
             petStuffs.remove(indexToRemove);
-            appHelperPetStuff.getRepository().save(petStuffs);
+            petStuffRepository.save(petStuffs);
             System.out.println("Товар успешно удален.");
             return true;
         } else {
             System.out.println("Некорректный выбор товара.");
-            return false;
         }
+        return false;
     }
 }

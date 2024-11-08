@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileStorage<T> implements FileRepository<T> {
-    private final String filename;
+    private String filename;
 
     public FileStorage(String filename) {
         this.filename = filename;
@@ -24,7 +24,7 @@ public class FileStorage<T> implements FileRepository<T> {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
             out.writeObject(items);
         } catch (IOException e) {
-            System.out.println("Error saving data: " + e.getMessage());
+            System.out.println("Ошибка при сохранении данных: " + e.getMessage());
         }
     }
 
@@ -33,7 +33,7 @@ public class FileStorage<T> implements FileRepository<T> {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
             return (List<T>) in.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("Error loading data: " + e.getMessage());
+            System.out.println("Ошибка при загрузке данных: " + e.getMessage());
             return new ArrayList<>();
         }
     }

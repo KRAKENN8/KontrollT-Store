@@ -1,6 +1,10 @@
 package org.example.model;
 
-public class PetStuff {
+import java.io.Serializable;
+
+public class PetStuff implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String name;
     private String description;
     private double price;
@@ -16,6 +20,8 @@ public class PetStuff {
         this.hasDiscount = hasDiscount;
         this.discountedPrice = discountedPrice;
     }
+
+    // Геттеры и сеттеры
 
     public String getName() {
         return name;
